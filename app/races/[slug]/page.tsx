@@ -5,6 +5,7 @@ import { JoinRaceButton } from "@/components/JoinRaceButton";
 import { Leaderboard } from "@/components/Leaderboard";
 import { SegmentSearch } from "@/components/SegmentSearch";
 import { ShareLink } from "@/components/ShareLink";
+import { RefreshButton } from "@/components/RefreshButton";
 
 interface Props {
   params: Promise<{ slug: string }>;
@@ -135,6 +136,13 @@ export default async function RacePage({ params }: Props) {
           </div>
         )}
       </section>
+
+      {/* Sync efforts button for participants */}
+      {(isParticipant || isOrganizer) && race.segments.length > 0 && (
+        <div className="mb-6">
+          <RefreshButton slug={race.slug} />
+        </div>
+      )}
 
       {/* Leaderboard */}
       <Leaderboard raceId={race.id} segments={race.segments} />
