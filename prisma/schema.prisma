@@ -1,0 +1,74 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model User {
+  id            String   @id @default(cuid())
+  stravaId      Int      @unique
+  name          String
+  accessToken   String
+  refreshToken  String
+  tokenExpiry   DateTime
+  createdAt     DateTime @default(now())
+
+  organizedRaces Race[]            @relation("Organizer")
+  participations RaceParticipant[]
+  efforts        SegmentEffort[]
+}
+
+model Race {
+  id          String   @id @default(cuid())
+  slug        String   @unique
+  name        String
+  description String?
+  startDate   DateTime
+  endDate     DateTime
+  createdAt   DateTime @default(now())
+
+  organizerId String
+  organizer   User   @relation("Organizer", fields: [organizerId], references: [id])
+
+  segments     RaceSegment[]
+  participants RaceParticipant[]
+}
+
+model RaceSegment {
+  id              String @id @default(cuid())
+  stravaSegmentId Int
+  name            String
+  distance        Float
+  averageGrade    Float
+
+  raceId String
+  race   Race   @relation(fields: [raceId], references: [id], onDelete: Cascade)
+
+  efforts SegmentEffort[]
+}
+
+model RaceParticipant {
+  id       String   @id @default(cuid())
+  joinedAt DateTime @default(now())
+
+  raceId String
+  race   Race   @relation(fields: [raceId], references: [id], onDelete: Cascade)
+  userId String
+  user   User   @relation(fields: [userId], references: [id])
+
+  @@unique([raceId, userId])
+}
+
+model SegmentEffort {
+  id             String   @id @default(cuid())
+  elapsedTime    Int // seconds
+  activityDate   DateTime
+  stravaEffortId BigInt   @unique
+
+  segmentId String
+  segment   RaceSegment @relation(fields: [segmentId], references: [id], onDelete: Cascade)
+  userId    String
+  user      User        @relation(fields: [userId], references: [id])
+}
