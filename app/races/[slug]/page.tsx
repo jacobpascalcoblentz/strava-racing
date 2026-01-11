@@ -3,6 +3,8 @@ import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { JoinRaceButton } from "@/components/JoinRaceButton";
 import { Leaderboard } from "@/components/Leaderboard";
+import { SegmentSearch } from "@/components/SegmentSearch";
+import { ShareLink } from "@/components/ShareLink";
 
 interface Props {
   params: Promise<{ slug: string }>;
@@ -84,6 +86,13 @@ export default async function RacePage({ params }: Props) {
         </div>
       )}
 
+      {/* Segment search for organizers */}
+      {isOrganizer && isActive && (
+        <section className="mb-8">
+          <SegmentSearch raceSlug={race.slug} />
+        </section>
+      )}
+
       {/* Segments section */}
       <section className="mb-8">
         <h2 className="text-xl font-semibold mb-4">
@@ -92,7 +101,7 @@ export default async function RacePage({ params }: Props) {
         {race.segments.length === 0 ? (
           <div className="p-4 border border-dashed border-gray-300 dark:border-gray-700 rounded-lg text-center text-gray-500">
             {isOrganizer ? (
-              <p>No segments added yet. Add segments to start the race.</p>
+              <p>No segments added yet. Use the form above to add segments.</p>
             ) : (
               <p>The organizer hasn&apos;t added any segments yet.</p>
             )}
@@ -131,27 +140,7 @@ export default async function RacePage({ params }: Props) {
       <Leaderboard raceId={race.id} segments={race.segments} />
 
       {/* Share section */}
-      <section className="mt-8 p-4 bg-gray-50 dark:bg-gray-900 rounded-lg">
-        <h3 className="font-medium mb-2">Share this race</h3>
-        <div className="flex gap-2">
-          <input
-            type="text"
-            readOnly
-            value={`${process.env.NEXT_PUBLIC_URL || "http://localhost:3000"}/races/${race.slug}`}
-            className="flex-1 px-3 py-2 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-700 rounded-lg text-sm"
-          />
-          <button
-            onClick={() => {
-              navigator.clipboard.writeText(
-                `${process.env.NEXT_PUBLIC_URL || "http://localhost:3000"}/races/${race.slug}`
-              );
-            }}
-            className="px-4 py-2 bg-gray-200 dark:bg-gray-700 rounded-lg text-sm hover:bg-gray-300 dark:hover:bg-gray-600"
-          >
-            Copy
-          </button>
-        </div>
-      </section>
+      <ShareLink url={`${process.env.NEXT_PUBLIC_URL || "http://localhost:3000"}/races/${race.slug}`} />
     </div>
   );
 }
