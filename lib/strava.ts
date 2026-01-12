@@ -1,4 +1,5 @@
 import { prisma } from "./prisma";
+import { encrypt, decrypt } from "./crypto";
 
 const STRAVA_API_BASE = "https://www.strava.com/api/v3";
 
@@ -32,8 +33,12 @@ export async function refreshAccessToken(userId: string): Promise<string> {
 
   // Check if token is still valid
   if (new Date(user.tokenExpiry) > new Date()) {
-    return user.accessToken;
+    // Decrypt token before returning
+    return decrypt(user.accessToken);
   }
+
+  // Decrypt refresh token to use it
+  const decryptedRefreshToken = decrypt(user.refreshToken);
 
   // Refresh the token
   const res = await fetch("https://www.strava.com/oauth/token", {
@@ -43,7 +48,7 @@ export async function refreshAccessToken(userId: string): Promise<string> {
       client_id: process.env.STRAVA_CLIENT_ID,
       client_secret: process.env.STRAVA_CLIENT_SECRET,
       grant_type: "refresh_token",
-      refresh_token: user.refreshToken,
+      refresh_token: decryptedRefreshToken,
     }),
   });
 
@@ -53,12 +58,16 @@ export async function refreshAccessToken(userId: string): Promise<string> {
 
   const data = await res.json();
 
-  // Update user with new tokens
+  // Encrypt new tokens before storing
+  const encryptedAccessToken = encrypt(data.access_token);
+  const encryptedRefreshToken = encrypt(data.refresh_token);
+
+  // Update user with new encrypted tokens
   await prisma.user.update({
     where: { id: userId },
     data: {
-      accessToken: data.access_token,
-      refreshToken: data.refresh_token,
+      accessToken: encryptedAccessToken,
+      refreshToken: encryptedRefreshToken,
       tokenExpiry: new Date(data.expires_at * 1000),
     },
   });
