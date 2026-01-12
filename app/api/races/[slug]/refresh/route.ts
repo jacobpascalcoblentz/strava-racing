@@ -31,7 +31,7 @@ export async function POST(
 
     // Check if user is a participant or organizer
     const isParticipant =
-      race.participants.some((p) => p.userId === session.user!.id) ||
+      race.participants.some((p: { userId: string }) => p.userId === session.user!.id) ||
       race.organizerId === session.user!.id;
 
     if (!isParticipant) {
