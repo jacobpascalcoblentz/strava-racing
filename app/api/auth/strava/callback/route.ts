@@ -107,7 +107,9 @@ export async function GET(request: Request) {
 
     return NextResponse.redirect(new URL("/dashboard", request.url));
   } catch (error) {
-    console.error("Strava auth error");
+    // Log error type for debugging (no sensitive data)
+    const errorMessage = error instanceof Error ? error.message : "Unknown error";
+    console.error("Strava auth error:", errorMessage);
     return NextResponse.redirect(
       new URL("/auth/signin?error=ServerError", request.url)
     );
