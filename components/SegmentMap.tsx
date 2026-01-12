@@ -1,9 +1,10 @@
 "use client";
 
 import { useEffect, useRef } from "react";
-import { MapContainer, TileLayer, Marker, Popup, useMap, useMapEvents } from "react-leaflet";
+import { MapContainer, TileLayer, Marker, Popup, Polyline, useMap, useMapEvents } from "react-leaflet";
 import L from "leaflet";
 import "leaflet/dist/leaflet.css";
+import polyline from "@mapbox/polyline";
 
 // Fix for default marker icons in Next.js
 const defaultIcon = L.icon({
@@ -39,6 +40,7 @@ interface Segment {
   climb_category?: number;
   start_latlng?: [number, number];
   end_latlng?: [number, number];
+  points?: string; // Encoded polyline
 }
 
 interface SegmentMapProps {
@@ -52,6 +54,27 @@ interface SegmentMapProps {
     ne_lng: number;
   }) => void;
   onSegmentSelect: (segment: Segment) => void;
+}
+
+// Decode polyline string to array of [lat, lng] tuples
+function decodePolyline(encoded: string): [number, number][] {
+  try {
+    return polyline.decode(encoded) as [number, number][];
+  } catch {
+    return [];
+  }
+}
+
+// Get color based on climb category
+function getSegmentColor(category?: number, isSelected?: boolean): string {
+  if (isSelected) return "#f97316"; // Orange for selected
+  if (!category || category === 0) return "#3b82f6"; // Blue for flat
+  if (category === 5) return "#22c55e"; // Green for Cat 5
+  if (category === 4) return "#84cc16"; // Lime for Cat 4
+  if (category === 3) return "#eab308"; // Yellow for Cat 3
+  if (category === 2) return "#f97316"; // Orange for Cat 2
+  if (category === 1) return "#ef4444"; // Red for Cat 1
+  return "#3b82f6";
 }
 
 // Component to handle map events
@@ -131,13 +154,37 @@ export default function SegmentMap({
       <MapEventHandler onBoundsChange={onBoundsChange} />
       <FlyToSegment segment={selectedSegment} />
 
+      {/* Render polylines for all segments */}
+      {segments.map((segment) => {
+        if (!segment.points) return null;
+        const isSelected = selectedSegment?.id === segment.id;
+        const positions = decodePolyline(segment.points);
+        if (positions.length === 0) return null;
+
+        return (
+          <Polyline
+            key={`line-${segment.id}`}
+            positions={positions}
+            pathOptions={{
+              color: getSegmentColor(segment.climb_category, isSelected),
+              weight: isSelected ? 5 : 3,
+              opacity: isSelected ? 1 : 0.7,
+            }}
+            eventHandlers={{
+              click: () => onSegmentSelect(segment),
+            }}
+          />
+        );
+      })}
+
+      {/* Render markers for segment starts */}
       {segments.map((segment) => {
         if (!segment.start_latlng) return null;
         const isSelected = selectedSegment?.id === segment.id;
 
         return (
           <Marker
-            key={segment.id}
+            key={`marker-${segment.id}`}
             position={segment.start_latlng}
             icon={isSelected ? selectedIcon : defaultIcon}
             eventHandlers={{

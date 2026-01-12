@@ -20,14 +20,20 @@ model User {
   efforts        SegmentEffort[]
 }
 
+enum ScoringMode {
+  TIME        // Sum of best times (lower is better)
+  POINTS      // Points based on position (higher is better)
+}
+
 model Race {
-  id          String   @id @default(cuid())
-  slug        String   @unique
+  id          String      @id @default(cuid())
+  slug        String      @unique
   name        String
   description String?
   startDate   DateTime
   endDate     DateTime
-  createdAt   DateTime @default(now())
+  scoringMode ScoringMode @default(TIME)
+  createdAt   DateTime    @default(now())
 
   organizerId String
   organizer   User   @relation("Organizer", fields: [organizerId], references: [id])

@@ -24,6 +24,7 @@ interface Segment {
   climb_category?: number;
   start_latlng?: [number, number];
   end_latlng?: [number, number];
+  points?: string; // Encoded polyline
 }
 
 export function SegmentSearch({ raceSlug }: { raceSlug: string }) {

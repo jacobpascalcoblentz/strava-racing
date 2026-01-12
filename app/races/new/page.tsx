@@ -19,6 +19,7 @@ export default function NewRace() {
       description: formData.get("description"),
       startDate: formData.get("startDate"),
       endDate: formData.get("endDate"),
+      scoringMode: formData.get("scoringMode"),
     };
 
     try {
@@ -131,6 +132,41 @@ export default function NewRace() {
                   min={today}
                   className="w-full px-5 py-3 border-2 border-gray-200 dark:border-gray-600 rounded-xl bg-gray-50 dark:bg-gray-900 focus:ring-4 focus:ring-orange-200 dark:focus:ring-orange-900 focus:border-orange-400 dark:focus:border-orange-500 transition-all duration-200"
                 />
+              </div>
+            </div>
+
+            <div>
+              <label className="block text-sm font-bold text-gray-700 dark:text-gray-200 mb-2">
+                🎯 Scoring Mode
+              </label>
+              <div className="grid grid-cols-2 gap-3">
+                <label className="relative cursor-pointer">
+                  <input
+                    type="radio"
+                    name="scoringMode"
+                    value="TIME"
+                    defaultChecked
+                    className="peer sr-only"
+                  />
+                  <div className="p-4 border-2 border-gray-200 dark:border-gray-600 rounded-xl bg-gray-50 dark:bg-gray-900 peer-checked:border-orange-400 peer-checked:bg-orange-50 dark:peer-checked:bg-orange-900/20 transition-all">
+                    <div className="text-2xl mb-1">⏱️</div>
+                    <div className="font-bold text-gray-800 dark:text-gray-100">Fastest Time</div>
+                    <div className="text-xs text-gray-500 dark:text-gray-400">Lowest total time wins</div>
+                  </div>
+                </label>
+                <label className="relative cursor-pointer">
+                  <input
+                    type="radio"
+                    name="scoringMode"
+                    value="POINTS"
+                    className="peer sr-only"
+                  />
+                  <div className="p-4 border-2 border-gray-200 dark:border-gray-600 rounded-xl bg-gray-50 dark:bg-gray-900 peer-checked:border-orange-400 peer-checked:bg-orange-50 dark:peer-checked:bg-orange-900/20 transition-all">
+                    <div className="text-2xl mb-1">🏆</div>
+                    <div className="font-bold text-gray-800 dark:text-gray-100">Points</div>
+                    <div className="text-xs text-gray-500 dark:text-gray-400">Points for position (10-8-6-4-2-1)</div>
+                  </div>
+                </label>
               </div>
             </div>
 

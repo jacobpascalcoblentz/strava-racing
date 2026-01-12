@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { getSession, clearSession } from "@/lib/session";
+import { PepeModeToggle } from "./PepeModeToggle";
 
 export async function Navbar() {
   const session = await getSession();
@@ -15,6 +16,7 @@ export async function Navbar() {
         </Link>
 
         <div className="flex items-center gap-3">
+          <PepeModeToggle />
           {session?.user ? (
             <>
               <span className="hidden sm:flex items-center gap-2 text-sm text-gray-600 dark:text-gray-400 bg-gray-100 dark:bg-gray-800 px-3 py-1.5 rounded-full">

@@ -16,6 +16,7 @@ interface StravaSegment {
   elev_difference?: number;
   start_latlng?: [number, number];
   end_latlng?: [number, number];
+  points?: string; // Encoded polyline
 }
 
 interface StravaSegmentEffort {

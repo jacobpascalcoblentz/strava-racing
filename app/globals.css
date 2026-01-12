@@ -24,3 +24,86 @@ body {
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
 }
+
+/* Pepe Mode - Cannabis Theme */
+:root.pepe-mode {
+  --pepe-green: #22c55e;
+  --pepe-purple: #9333ea;
+  --pepe-gradient: linear-gradient(135deg, #22c55e 0%, #9333ea 100%);
+}
+
+.pepe-mode body {
+  background: linear-gradient(180deg, #0a1a0f 0%, #1a0a1a 100%) !important;
+}
+
+.pepe-mode .bg-gradient-to-r.from-orange-500,
+.pepe-mode .from-orange-500 {
+  background-image: linear-gradient(to right, #22c55e, #9333ea) !important;
+}
+
+.pepe-mode .bg-gradient-to-br.from-orange-400 {
+  background-image: linear-gradient(to bottom right, #22c55e, #9333ea) !important;
+}
+
+.pepe-mode .text-orange-500 {
+  color: #22c55e !important;
+}
+
+.pepe-mode .text-orange-600 {
+  color: #16a34a !important;
+}
+
+.pepe-mode .border-orange-400,
+.pepe-mode .border-orange-500 {
+  border-color: #22c55e !important;
+}
+
+.pepe-mode .bg-orange-50,
+.pepe-mode .bg-orange-100 {
+  background-color: rgba(34, 197, 94, 0.1) !important;
+}
+
+.pepe-mode .ring-orange-200 {
+  --tw-ring-color: rgba(34, 197, 94, 0.3) !important;
+}
+
+.pepe-mode .focus\:border-orange-400:focus {
+  border-color: #22c55e !important;
+}
+
+/* Smoke animation for Pepe mode */
+@keyframes smoke-float {
+  0%, 100% {
+    transform: translateY(0) rotate(0deg);
+    opacity: 0;
+  }
+  10% {
+    opacity: 0.8;
+  }
+  90% {
+    opacity: 0.2;
+  }
+  100% {
+    transform: translateY(-100px) rotate(360deg);
+    opacity: 0;
+  }
+}
+
+.pepe-mode .smoke-particle {
+  animation: smoke-float 3s ease-in-out infinite;
+}
+
+/* Leaf decoration */
+.pepe-mode::before {
+  content: "";
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-image:
+    radial-gradient(circle at 10% 20%, rgba(34, 197, 94, 0.05) 0%, transparent 20%),
+    radial-gradient(circle at 90% 80%, rgba(147, 51, 234, 0.05) 0%, transparent 20%);
+  pointer-events: none;
+  z-index: -1;
+}

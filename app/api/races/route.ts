@@ -18,6 +18,7 @@ const createRaceSchema = z.object({
     .nullable(),
   startDate: z.string().refine((val) => !isNaN(Date.parse(val)), "Invalid start date"),
   endDate: z.string().refine((val) => !isNaN(Date.parse(val)), "Invalid end date"),
+  scoringMode: z.enum(["TIME", "POINTS"]).optional().default("TIME"),
 });
 
 export async function POST(request: Request) {
@@ -47,7 +48,7 @@ export async function POST(request: Request) {
       );
     }
 
-    const { name, description, startDate, endDate } = parseResult.data;
+    const { name, description, startDate, endDate, scoringMode } = parseResult.data;
 
     const start = new Date(startDate);
     const end = new Date(endDate);
@@ -82,6 +83,7 @@ export async function POST(request: Request) {
         slug,
         startDate: start,
         endDate: end,
+        scoringMode,
         organizerId: session.user.id,
       },
     });

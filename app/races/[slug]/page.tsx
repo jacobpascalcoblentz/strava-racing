@@ -4,8 +4,11 @@ import { prisma } from "@/lib/prisma";
 import { JoinRaceButton } from "@/components/JoinRaceButton";
 import { Leaderboard } from "@/components/Leaderboard";
 import { SegmentSearch } from "@/components/SegmentSearch";
+import { SegmentList } from "@/components/SegmentList";
 import { ShareLink } from "@/components/ShareLink";
 import { RefreshButton } from "@/components/RefreshButton";
+import { RaceEditForm } from "@/components/RaceEditForm";
+import { SegmentStandingsWrapper } from "@/components/SegmentStandingsWrapper";
 
 interface Props {
   params: Promise<{ slug: string }>;
@@ -50,7 +53,10 @@ export default async function RacePage({ params }: Props) {
                 <span>👤</span> Organized by <span className="font-medium text-gray-700 dark:text-gray-300">{race.organizer.name}</span>
               </p>
             </div>
-            <div>
+            <div className="flex items-center gap-2">
+              {isOrganizer && (
+                <RaceEditForm race={race} />
+              )}
               {isActive ? (
                 <span className="inline-flex items-center gap-2 px-4 py-2 bg-green-100 dark:bg-green-900/30 text-green-600 dark:text-green-400 rounded-full font-medium">
                   <span className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></span>
@@ -111,54 +117,11 @@ export default async function RacePage({ params }: Props) {
           <h2 className="text-2xl font-bold mb-6 text-gray-800 dark:text-gray-100 flex items-center gap-2">
             <span>🛤️</span> Segments ({race.segments.length})
           </h2>
-          {race.segments.length === 0 ? (
-            <div className="bg-white dark:bg-gray-800 rounded-2xl p-8 border-2 border-dashed border-gray-200 dark:border-gray-700 text-center">
-              <div className="text-4xl mb-3">🔍</div>
-              {isOrganizer ? (
-                <p className="text-gray-500 dark:text-gray-400">No segments added yet. Use the search above to add segments!</p>
-              ) : (
-                <p className="text-gray-500 dark:text-gray-400">The organizer hasn&apos;t added any segments yet.</p>
-              )}
-            </div>
-          ) : (
-            <div className="space-y-3">
-              {race.segments.map((segment, index) => (
-                <div
-                  key={segment.id}
-                  className="group bg-white dark:bg-gray-800 p-5 rounded-2xl shadow-md hover:shadow-lg transition-all duration-300 border border-gray-100 dark:border-gray-700"
-                >
-                  <div className="flex justify-between items-center">
-                    <div className="flex items-center gap-4">
-                      <div className="w-10 h-10 bg-gradient-to-br from-orange-400 to-red-500 rounded-xl flex items-center justify-center text-white font-bold shadow-md">
-                        {index + 1}
-                      </div>
-                      <div>
-                        <h3 className="font-bold text-gray-800 dark:text-gray-100 group-hover:text-orange-500 transition-colors">
-                          {segment.name}
-                        </h3>
-                        <div className="flex items-center gap-3 mt-1 text-sm text-gray-500 dark:text-gray-400">
-                          <span className="flex items-center gap-1">
-                            📏 {(segment.distance / 1000).toFixed(2)} km
-                          </span>
-                          <span className="flex items-center gap-1">
-                            ⛰️ {segment.averageGrade.toFixed(1)}% grade
-                          </span>
-                        </div>
-                      </div>
-                    </div>
-                    <a
-                      href={`https://www.strava.com/segments/${segment.stravaSegmentId}`}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="text-orange-500 hover:text-orange-600 font-medium text-sm flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity"
-                    >
-                      View on Strava →
-                    </a>
-                  </div>
-                </div>
-              ))}
-            </div>
-          )}
+          <SegmentList
+            segments={race.segments}
+            raceSlug={race.slug}
+            isOrganizer={isOrganizer}
+          />
         </section>
 
         {/* Sync efforts button for participants */}
@@ -169,7 +132,14 @@ export default async function RacePage({ params }: Props) {
         )}
 
         {/* Leaderboard */}
-        <Leaderboard raceId={race.id} segments={race.segments} />
+        <Leaderboard raceId={race.id} segments={race.segments} scoringMode={race.scoringMode} />
+
+        {/* Per-segment standings */}
+        {race.segments.length > 0 && (
+          <div className="mt-8">
+            <SegmentStandingsWrapper raceId={race.id} />
+          </div>
+        )}
 
         {/* Share section */}
         <ShareLink url={`${process.env.NEXTAUTH_URL}/races/${race.slug}`} />
