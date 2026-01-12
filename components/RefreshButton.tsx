@@ -37,12 +37,22 @@ export function RefreshButton({ slug }: { slug: string }) {
       <button
         onClick={handleRefresh}
         disabled={loading}
-        className="px-4 py-2 bg-gray-200 dark:bg-gray-700 rounded-lg hover:bg-gray-300 dark:hover:bg-gray-600 disabled:opacity-50"
+        className="px-6 py-3 bg-gradient-to-r from-purple-500 to-pink-500 text-white rounded-xl font-bold hover:from-purple-600 hover:to-pink-600 disabled:opacity-50 transform hover:scale-105 transition-all duration-200 shadow-md hover:shadow-lg flex items-center gap-2"
       >
-        {loading ? "Syncing..." : "Sync My Efforts"}
+        {loading ? (
+          <>
+            <span className="animate-spin">🔄</span>
+            Syncing...
+          </>
+        ) : (
+          <>
+            <span>⚡</span>
+            Sync My Efforts
+          </>
+        )}
       </button>
       {message && (
-        <span className="text-sm text-gray-600 dark:text-gray-400">
+        <span className="text-sm text-gray-600 dark:text-gray-400 bg-gray-100 dark:bg-gray-800 px-3 py-1 rounded-full">
           {message}
         </span>
       )}

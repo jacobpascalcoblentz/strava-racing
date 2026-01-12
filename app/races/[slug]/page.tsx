@@ -37,118 +37,143 @@ export default async function RacePage({ params }: Props) {
   const isActive = new Date(race.endDate) > new Date();
 
   return (
-    <div className="max-w-4xl mx-auto px-4 py-8">
-      <div className="mb-8">
-        <div className="flex justify-between items-start">
-          <div>
-            <h1 className="text-3xl font-bold mb-2">{race.name}</h1>
-            <p className="text-gray-500">
-              Organized by {race.organizer.name}
+    <div className="min-h-[calc(100vh-73px)] bg-gradient-to-br from-gray-50 to-orange-50/30 dark:from-gray-950 dark:to-gray-900">
+      <div className="max-w-4xl mx-auto px-4 py-8">
+        {/* Header */}
+        <div className="bg-white dark:bg-gray-800 rounded-3xl p-8 shadow-lg border border-gray-100 dark:border-gray-700 mb-8">
+          <div className="flex justify-between items-start">
+            <div>
+              <h1 className="text-4xl font-extrabold text-gray-800 dark:text-gray-100 flex items-center gap-3">
+                <span>🏁</span> {race.name}
+              </h1>
+              <p className="text-gray-500 dark:text-gray-400 mt-2 flex items-center gap-2">
+                <span>👤</span> Organized by <span className="font-medium text-gray-700 dark:text-gray-300">{race.organizer.name}</span>
+              </p>
+            </div>
+            <div>
+              {isActive ? (
+                <span className="inline-flex items-center gap-2 px-4 py-2 bg-green-100 dark:bg-green-900/30 text-green-600 dark:text-green-400 rounded-full font-medium">
+                  <span className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></span>
+                  Active
+                </span>
+              ) : (
+                <span className="inline-flex items-center gap-2 px-4 py-2 bg-gray-100 dark:bg-gray-700 text-gray-500 dark:text-gray-400 rounded-full font-medium">
+                  🏆 Ended
+                </span>
+              )}
+            </div>
+          </div>
+
+          {race.description && (
+            <p className="mt-4 text-gray-600 dark:text-gray-300 bg-gray-50 dark:bg-gray-900 p-4 rounded-xl">
+              {race.description}
             </p>
-          </div>
-          <div className="text-right">
-            {isActive ? (
-              <span className="inline-block px-3 py-1 bg-green-100 dark:bg-green-900 text-green-700 dark:text-green-300 rounded-full text-sm">
-                Active
+          )}
+
+          <div className="mt-6 flex flex-wrap gap-4">
+            <div className="flex items-center gap-2 bg-orange-50 dark:bg-orange-900/20 px-4 py-2 rounded-xl">
+              <span>🗓️</span>
+              <span className="text-sm text-gray-600 dark:text-gray-300">
+                <strong>Start:</strong> {new Date(race.startDate).toLocaleDateString()}
               </span>
-            ) : (
-              <span className="inline-block px-3 py-1 bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-400 rounded-full text-sm">
-                Ended
+            </div>
+            <div className="flex items-center gap-2 bg-red-50 dark:bg-red-900/20 px-4 py-2 rounded-xl">
+              <span>🏁</span>
+              <span className="text-sm text-gray-600 dark:text-gray-300">
+                <strong>End:</strong> {new Date(race.endDate).toLocaleDateString()}
               </span>
-            )}
+            </div>
+            <div className="flex items-center gap-2 bg-blue-50 dark:bg-blue-900/20 px-4 py-2 rounded-xl">
+              <span>👥</span>
+              <span className="text-sm text-gray-600 dark:text-gray-300">
+                <strong>{race.participants.length}</strong> riders
+              </span>
+            </div>
           </div>
         </div>
 
-        {race.description && (
-          <p className="mt-4 text-gray-600 dark:text-gray-400">
-            {race.description}
-          </p>
+        {/* Join button for non-participants */}
+        {session?.user && !isParticipant && !isOrganizer && isActive && (
+          <div className="mb-8">
+            <JoinRaceButton slug={race.slug} />
+          </div>
         )}
 
-        <div className="mt-4 flex gap-6 text-sm text-gray-500">
-          <div>
-            <strong>Start:</strong>{" "}
-            {new Date(race.startDate).toLocaleDateString()}
-          </div>
-          <div>
-            <strong>End:</strong>{" "}
-            {new Date(race.endDate).toLocaleDateString()}
-          </div>
-          <div>
-            <strong>Participants:</strong> {race.participants.length}
-          </div>
-        </div>
-      </div>
+        {/* Segment search for organizers */}
+        {isOrganizer && isActive && (
+          <section className="mb-8">
+            <SegmentSearch raceSlug={race.slug} />
+          </section>
+        )}
 
-      {/* Join button for non-participants */}
-      {session?.user && !isParticipant && !isOrganizer && isActive && (
-        <div className="mb-8">
-          <JoinRaceButton slug={race.slug} />
-        </div>
-      )}
-
-      {/* Segment search for organizers */}
-      {isOrganizer && isActive && (
+        {/* Segments section */}
         <section className="mb-8">
-          <SegmentSearch raceSlug={race.slug} />
-        </section>
-      )}
-
-      {/* Segments section */}
-      <section className="mb-8">
-        <h2 className="text-xl font-semibold mb-4">
-          Segments ({race.segments.length})
-        </h2>
-        {race.segments.length === 0 ? (
-          <div className="p-4 border border-dashed border-gray-300 dark:border-gray-700 rounded-lg text-center text-gray-500">
-            {isOrganizer ? (
-              <p>No segments added yet. Use the form above to add segments.</p>
-            ) : (
-              <p>The organizer hasn&apos;t added any segments yet.</p>
-            )}
-          </div>
-        ) : (
-          <div className="space-y-2">
-            {race.segments.map((segment) => (
-              <div
-                key={segment.id}
-                className="p-4 border border-gray-200 dark:border-gray-800 rounded-lg"
-              >
-                <div className="flex justify-between">
-                  <div>
-                    <h3 className="font-medium">{segment.name}</h3>
-                    <p className="text-sm text-gray-500">
-                      {(segment.distance / 1000).toFixed(2)} km &bull;{" "}
-                      {segment.averageGrade.toFixed(1)}% avg grade
-                    </p>
+          <h2 className="text-2xl font-bold mb-6 text-gray-800 dark:text-gray-100 flex items-center gap-2">
+            <span>🛤️</span> Segments ({race.segments.length})
+          </h2>
+          {race.segments.length === 0 ? (
+            <div className="bg-white dark:bg-gray-800 rounded-2xl p-8 border-2 border-dashed border-gray-200 dark:border-gray-700 text-center">
+              <div className="text-4xl mb-3">🔍</div>
+              {isOrganizer ? (
+                <p className="text-gray-500 dark:text-gray-400">No segments added yet. Use the search above to add segments!</p>
+              ) : (
+                <p className="text-gray-500 dark:text-gray-400">The organizer hasn&apos;t added any segments yet.</p>
+              )}
+            </div>
+          ) : (
+            <div className="space-y-3">
+              {race.segments.map((segment, index) => (
+                <div
+                  key={segment.id}
+                  className="group bg-white dark:bg-gray-800 p-5 rounded-2xl shadow-md hover:shadow-lg transition-all duration-300 border border-gray-100 dark:border-gray-700"
+                >
+                  <div className="flex justify-between items-center">
+                    <div className="flex items-center gap-4">
+                      <div className="w-10 h-10 bg-gradient-to-br from-orange-400 to-red-500 rounded-xl flex items-center justify-center text-white font-bold shadow-md">
+                        {index + 1}
+                      </div>
+                      <div>
+                        <h3 className="font-bold text-gray-800 dark:text-gray-100 group-hover:text-orange-500 transition-colors">
+                          {segment.name}
+                        </h3>
+                        <div className="flex items-center gap-3 mt-1 text-sm text-gray-500 dark:text-gray-400">
+                          <span className="flex items-center gap-1">
+                            📏 {(segment.distance / 1000).toFixed(2)} km
+                          </span>
+                          <span className="flex items-center gap-1">
+                            ⛰️ {segment.averageGrade.toFixed(1)}% grade
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+                    <a
+                      href={`https://www.strava.com/segments/${segment.stravaSegmentId}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-orange-500 hover:text-orange-600 font-medium text-sm flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity"
+                    >
+                      View on Strava →
+                    </a>
                   </div>
-                  <a
-                    href={`https://www.strava.com/segments/${segment.stravaSegmentId}`}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="text-orange-500 hover:underline text-sm"
-                  >
-                    View on Strava
-                  </a>
                 </div>
-              </div>
-            ))}
+              ))}
+            </div>
+          )}
+        </section>
+
+        {/* Sync efforts button for participants */}
+        {(isParticipant || isOrganizer) && race.segments.length > 0 && (
+          <div className="mb-8">
+            <RefreshButton slug={race.slug} />
           </div>
         )}
-      </section>
 
-      {/* Sync efforts button for participants */}
-      {(isParticipant || isOrganizer) && race.segments.length > 0 && (
-        <div className="mb-6">
-          <RefreshButton slug={race.slug} />
-        </div>
-      )}
+        {/* Leaderboard */}
+        <Leaderboard raceId={race.id} segments={race.segments} />
 
-      {/* Leaderboard */}
-      <Leaderboard raceId={race.id} segments={race.segments} />
-
-      {/* Share section */}
-      <ShareLink url={`${process.env.NEXTAUTH_URL}/races/${race.slug}`} />
+        {/* Share section */}
+        <ShareLink url={`${process.env.NEXTAUTH_URL}/races/${race.slug}`} />
+      </div>
     </div>
   );
 }

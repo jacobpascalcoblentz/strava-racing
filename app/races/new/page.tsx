@@ -45,98 +45,122 @@ export default function NewRace() {
   const today = new Date().toISOString().split("T")[0];
 
   return (
-    <div className="max-w-2xl mx-auto px-4 py-8">
-      <h1 className="text-3xl font-bold mb-8">Create a New Race</h1>
-
-      <form onSubmit={handleSubmit} className="space-y-6">
-        {error && (
-          <div className="p-4 bg-red-50 dark:bg-red-900/20 text-red-600 dark:text-red-400 rounded-lg">
-            {error}
-          </div>
-        )}
-
-        <div>
-          <label
-            htmlFor="name"
-            className="block text-sm font-medium mb-2"
-          >
-            Race Name
-          </label>
-          <input
-            type="text"
-            id="name"
-            name="name"
-            required
-            className="w-full px-4 py-2 border border-gray-300 dark:border-gray-700 rounded-lg bg-white dark:bg-gray-900 focus:ring-2 focus:ring-orange-500 focus:border-transparent"
-            placeholder="Summer Hill Climb Challenge"
-          />
+    <div className="min-h-[calc(100vh-73px)] bg-gradient-to-br from-orange-50 via-white to-amber-50 dark:from-gray-950 dark:via-gray-900 dark:to-orange-950">
+      <div className="max-w-2xl mx-auto px-4 py-12">
+        <div className="text-center mb-10">
+          <div className="text-5xl mb-4">🏁</div>
+          <h1 className="text-4xl font-extrabold bg-gradient-to-r from-orange-500 to-amber-500 bg-clip-text text-transparent">
+            Create a New Race
+          </h1>
+          <p className="text-gray-500 dark:text-gray-400 mt-2">
+            Set up your race and invite your friends to compete!
+          </p>
         </div>
 
-        <div>
-          <label
-            htmlFor="description"
-            className="block text-sm font-medium mb-2"
-          >
-            Description (optional)
-          </label>
-          <textarea
-            id="description"
-            name="description"
-            rows={3}
-            className="w-full px-4 py-2 border border-gray-300 dark:border-gray-700 rounded-lg bg-white dark:bg-gray-900 focus:ring-2 focus:ring-orange-500 focus:border-transparent"
-            placeholder="Describe your race..."
-          />
-        </div>
+        <div className="bg-white dark:bg-gray-800 rounded-3xl shadow-xl p-8 border border-gray-100 dark:border-gray-700">
+          <form onSubmit={handleSubmit} className="space-y-6">
+            {error && (
+              <div className="p-4 bg-red-50 dark:bg-red-900/20 text-red-600 dark:text-red-400 rounded-2xl flex items-center gap-3">
+                <span className="text-xl">😕</span>
+                {error}
+              </div>
+            )}
 
-        <div className="grid grid-cols-2 gap-4">
-          <div>
-            <label
-              htmlFor="startDate"
-              className="block text-sm font-medium mb-2"
-            >
-              Start Date
-            </label>
-            <input
-              type="date"
-              id="startDate"
-              name="startDate"
-              required
-              min={today}
-              className="w-full px-4 py-2 border border-gray-300 dark:border-gray-700 rounded-lg bg-white dark:bg-gray-900 focus:ring-2 focus:ring-orange-500 focus:border-transparent"
-            />
-          </div>
-          <div>
-            <label
-              htmlFor="endDate"
-              className="block text-sm font-medium mb-2"
-            >
-              End Date
-            </label>
-            <input
-              type="date"
-              id="endDate"
-              name="endDate"
-              required
-              min={today}
-              className="w-full px-4 py-2 border border-gray-300 dark:border-gray-700 rounded-lg bg-white dark:bg-gray-900 focus:ring-2 focus:ring-orange-500 focus:border-transparent"
-            />
-          </div>
-        </div>
+            <div>
+              <label
+                htmlFor="name"
+                className="block text-sm font-bold text-gray-700 dark:text-gray-200 mb-2"
+              >
+                🏷️ Race Name
+              </label>
+              <input
+                type="text"
+                id="name"
+                name="name"
+                required
+                className="w-full px-5 py-3 border-2 border-gray-200 dark:border-gray-600 rounded-xl bg-gray-50 dark:bg-gray-900 focus:ring-4 focus:ring-orange-200 dark:focus:ring-orange-900 focus:border-orange-400 dark:focus:border-orange-500 transition-all duration-200 text-lg"
+                placeholder="Summer Hill Climb Challenge"
+              />
+            </div>
 
-        <div className="pt-4">
-          <button
-            type="submit"
-            disabled={loading}
-            className="w-full bg-orange-500 text-white py-3 rounded-lg font-medium hover:bg-orange-600 disabled:opacity-50 disabled:cursor-not-allowed"
-          >
-            {loading ? "Creating..." : "Create Race"}
-          </button>
-        </div>
+            <div>
+              <label
+                htmlFor="description"
+                className="block text-sm font-bold text-gray-700 dark:text-gray-200 mb-2"
+              >
+                📝 Description <span className="font-normal text-gray-400">(optional)</span>
+              </label>
+              <textarea
+                id="description"
+                name="description"
+                rows={3}
+                className="w-full px-5 py-3 border-2 border-gray-200 dark:border-gray-600 rounded-xl bg-gray-50 dark:bg-gray-900 focus:ring-4 focus:ring-orange-200 dark:focus:ring-orange-900 focus:border-orange-400 dark:focus:border-orange-500 transition-all duration-200"
+                placeholder="Tell participants what this race is about..."
+              />
+            </div>
 
-        <p className="text-sm text-gray-500 text-center">
-          After creating your race, you&apos;ll be able to add segments.
-        </p>
-      </form>
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <label
+                  htmlFor="startDate"
+                  className="block text-sm font-bold text-gray-700 dark:text-gray-200 mb-2"
+                >
+                  🗓️ Start Date
+                </label>
+                <input
+                  type="date"
+                  id="startDate"
+                  name="startDate"
+                  required
+                  min={today}
+                  className="w-full px-5 py-3 border-2 border-gray-200 dark:border-gray-600 rounded-xl bg-gray-50 dark:bg-gray-900 focus:ring-4 focus:ring-orange-200 dark:focus:ring-orange-900 focus:border-orange-400 dark:focus:border-orange-500 transition-all duration-200"
+                />
+              </div>
+              <div>
+                <label
+                  htmlFor="endDate"
+                  className="block text-sm font-bold text-gray-700 dark:text-gray-200 mb-2"
+                >
+                  🏁 End Date
+                </label>
+                <input
+                  type="date"
+                  id="endDate"
+                  name="endDate"
+                  required
+                  min={today}
+                  className="w-full px-5 py-3 border-2 border-gray-200 dark:border-gray-600 rounded-xl bg-gray-50 dark:bg-gray-900 focus:ring-4 focus:ring-orange-200 dark:focus:ring-orange-900 focus:border-orange-400 dark:focus:border-orange-500 transition-all duration-200"
+                />
+              </div>
+            </div>
+
+            <div className="pt-4">
+              <button
+                type="submit"
+                disabled={loading}
+                className="w-full bg-gradient-to-r from-orange-500 to-amber-500 text-white py-4 rounded-2xl text-lg font-bold hover:from-orange-600 hover:to-amber-600 disabled:opacity-50 disabled:cursor-not-allowed transform hover:scale-[1.02] transition-all duration-200 shadow-lg hover:shadow-orange-200 dark:hover:shadow-orange-900/50 flex items-center justify-center gap-2"
+              >
+                {loading ? (
+                  <>
+                    <span className="animate-spin">⏳</span>
+                    Creating...
+                  </>
+                ) : (
+                  <>
+                    <span>🚀</span>
+                    Create Race
+                  </>
+                )}
+              </button>
+            </div>
+
+            <p className="text-sm text-gray-400 dark:text-gray-500 text-center flex items-center justify-center gap-2">
+              <span>💡</span>
+              After creating your race, you&apos;ll be able to add segments.
+            </p>
+          </form>
+        </div>
+      </div>
     </div>
   );
 }
