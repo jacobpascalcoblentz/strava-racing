@@ -8,9 +8,14 @@ interface StravaSegment {
   name: string;
   distance: number;
   average_grade: number;
-  city: string;
-  state: string;
-  country: string;
+  avg_grade?: number;
+  city?: string;
+  state?: string;
+  country?: string;
+  climb_category?: number;
+  elev_difference?: number;
+  start_latlng?: [number, number];
+  end_latlng?: [number, number];
 }
 
 interface StravaSegmentEffort {
