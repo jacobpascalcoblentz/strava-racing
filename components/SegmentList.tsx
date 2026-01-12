@@ -81,7 +81,6 @@ export function SegmentList({ segments, raceSlug, isOrganizer }: SegmentListProp
               </div>
               <div className="hidden sm:block">
                 <ElevationProfile
-                  distance={segment.distance}
                   elevationGain={segment.distance * (segment.averageGrade / 100)}
                   averageGrade={segment.averageGrade}
                 />

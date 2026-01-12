@@ -1,19 +1,20 @@
 "use client";
 
+import { useId } from "react";
+
 interface Props {
-  distance: number; // meters
   elevationGain: number; // meters
   averageGrade: number; // percentage
   climbCategory?: number;
 }
 
-export function ElevationProfile({ distance, elevationGain, averageGrade, climbCategory }: Props) {
+export function ElevationProfile({ elevationGain, averageGrade, climbCategory }: Props) {
+  const uniqueId = useId();
   // Calculate profile points
   const width = 200;
   const height = 60;
   const padding = 10;
 
-  const innerWidth = width - padding * 2;
   const innerHeight = height - padding * 2;
 
   // Create a simple climb profile
@@ -50,7 +51,7 @@ export function ElevationProfile({ distance, elevationGain, averageGrade, climbC
   };
 
   const [colorStart, colorEnd] = getGradientColors();
-  const gradientId = `elev-gradient-${Math.random().toString(36).substr(2, 9)}`;
+  const gradientId = `elev-gradient-${uniqueId}`;
 
   return (
     <div className="inline-flex flex-col items-center">
