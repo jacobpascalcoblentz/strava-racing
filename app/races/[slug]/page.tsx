@@ -148,7 +148,7 @@ export default async function RacePage({ params }: Props) {
       <Leaderboard raceId={race.id} segments={race.segments} />
 
       {/* Share section */}
-      <ShareLink url={`${process.env.NEXT_PUBLIC_URL || "http://localhost:3000"}/races/${race.slug}`} />
+      <ShareLink url={`${process.env.NEXTAUTH_URL}/races/${race.slug}`} />
     </div>
   );
 }
