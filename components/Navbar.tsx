@@ -1,8 +1,8 @@
 import Link from "next/link";
-import { auth, signIn, signOut } from "@/lib/auth";
+import { getSession, clearSession } from "@/lib/session";
 
 export async function Navbar() {
-  const session = await auth();
+  const session = await getSession();
 
   return (
     <nav className="border-b border-gray-200 dark:border-gray-800">
@@ -14,6 +14,9 @@ export async function Navbar() {
         <div className="flex items-center gap-4">
           {session?.user ? (
             <>
+              <span className="text-sm text-gray-600 dark:text-gray-400">
+                {session.user.name}
+              </span>
               <Link
                 href="/dashboard"
                 className="text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white"
@@ -29,7 +32,7 @@ export async function Navbar() {
               <form
                 action={async () => {
                   "use server";
-                  await signOut();
+                  await clearSession();
                 }}
               >
                 <button
@@ -41,19 +44,12 @@ export async function Navbar() {
               </form>
             </>
           ) : (
-            <form
-              action={async () => {
-                "use server";
-                await signIn("strava");
-              }}
+            <Link
+              href="/api/auth/strava"
+              className="bg-orange-500 text-white px-4 py-2 rounded-lg hover:bg-orange-600"
             >
-              <button
-                type="submit"
-                className="bg-orange-500 text-white px-4 py-2 rounded-lg hover:bg-orange-600"
-              >
-                Sign in with Strava
-              </button>
-            </form>
+              Sign in with Strava
+            </Link>
           )}
         </div>
       </div>

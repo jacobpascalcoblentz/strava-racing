@@ -1,5 +1,5 @@
 import { notFound } from "next/navigation";
-import { auth } from "@/lib/auth";
+import { getSession } from "@/lib/session";
 import { prisma } from "@/lib/prisma";
 import { JoinRaceButton } from "@/components/JoinRaceButton";
 import { Leaderboard } from "@/components/Leaderboard";
@@ -13,7 +13,7 @@ interface Props {
 
 export default async function RacePage({ params }: Props) {
   const { slug } = await params;
-  const session = await auth();
+  const session = await getSession();
 
   const race = await prisma.race.findUnique({
     where: { slug },

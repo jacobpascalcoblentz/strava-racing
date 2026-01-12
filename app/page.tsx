@@ -1,8 +1,8 @@
 import Link from "next/link";
-import { auth, signIn } from "@/lib/auth";
+import { getSession } from "@/lib/session";
 
 export default async function Home() {
-  const session = await auth();
+  const session = await getSession();
 
   return (
     <div className="max-w-4xl mx-auto px-4 py-16">
@@ -32,19 +32,12 @@ export default async function Home() {
             </Link>
           </div>
         ) : (
-          <form
-            action={async () => {
-              "use server";
-              await signIn("strava");
-            }}
+          <Link
+            href="/api/auth/strava"
+            className="inline-block bg-orange-500 text-white px-8 py-3 rounded-lg text-lg font-medium hover:bg-orange-600"
           >
-            <button
-              type="submit"
-              className="bg-orange-500 text-white px-8 py-3 rounded-lg text-lg font-medium hover:bg-orange-600"
-            >
-              Get Started with Strava
-            </button>
-          </form>
+            Get Started with Strava
+          </Link>
         )}
       </div>
 
