@@ -1,7 +1,7 @@
 import { cookies } from "next/headers";
-import { redirect } from "next/navigation";
+import { NextResponse } from "next/server";
 
-export async function GET() {
+export async function GET(request: Request) {
   const clientId = process.env.STRAVA_CLIENT_ID;
   const redirectUri = `${process.env.NEXTAUTH_URL}/api/auth/strava/callback`;
   const scope = "read,activity:read_all";
@@ -26,5 +26,6 @@ export async function GET() {
   authUrl.searchParams.set("scope", scope);
   authUrl.searchParams.set("state", state);
 
-  redirect(authUrl.toString());
+  // Use NextResponse.redirect to ensure cookies are set before redirect
+  return NextResponse.redirect(authUrl.toString());
 }
