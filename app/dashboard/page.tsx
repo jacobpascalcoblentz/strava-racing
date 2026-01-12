@@ -2,6 +2,10 @@ import Link from "next/link";
 import { redirect } from "next/navigation";
 import { getSession } from "@/lib/session";
 import { prisma } from "@/lib/prisma";
+import type { Race, User } from "@prisma/client";
+
+type OrganizedRace = Race & { _count: { participants: number; segments: number } };
+type ParticipatingRace = { race: Race & { organizer: User; _count: { participants: number; segments: number } } };
 
 export default async function Dashboard() {
   const session = await getSession();
@@ -52,7 +56,7 @@ export default async function Dashboard() {
           </p>
         ) : (
           <div className="grid gap-4">
-            {organizedRaces.map((race) => (
+            {organizedRaces.map((race: OrganizedRace) => (
               <Link
                 key={race.id}
                 href={`/races/${race.slug}`}
@@ -88,7 +92,7 @@ export default async function Dashboard() {
           </p>
         ) : (
           <div className="grid gap-4">
-            {participatingRaces.map(({ race }) => (
+            {participatingRaces.map(({ race }: ParticipatingRace) => (
               <Link
                 key={race.id}
                 href={`/races/${race.slug}`}
